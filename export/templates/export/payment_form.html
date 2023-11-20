@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Razorpay Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  </head>
+  <body>
+    <h1>Payment Form</h1>
+    <button id="rzp-button">Pay with Razorpay</button>
+    <script>
+      var options = {
+        key: "your_api_key_here",
+        amount: 10000, // Amount in paisa (e.g., 10000 paisa = 100 INR)
+        currency: "INR",
+        name: "Your Company Name",
+        description: "Product or service description",
+        image: "your_logo_url",
+        handler: function (response) {
+          // Handle the payment success and send the response to your server for verification
+          fetch("/payment/callback/", {
+            method: "POST",
+            body: JSON.stringify(response),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then(function (data) {
+              // Redirect or display a success message to the user
+              console.log(data);
+            })
+            .catch(function (error) {
+              console.error(error);
+            });
+        },
+      };
+
+      var rzp = new Razorpay(options);
+      document.getElementById("rzp-button").onclick = function () {
+        rzp.open();
+      };
+    </script>
+  </body>
+</html>
